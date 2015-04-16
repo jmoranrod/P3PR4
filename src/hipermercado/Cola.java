@@ -42,7 +42,7 @@ public class Cola {
         }*/
     }
 
-    public Cliente sacar() {
+    public synchronized Cliente sacar() {
         long antes = System.currentTimeMillis();
         //System.out.println("Tiempo al entrar: "+antes);
         if (!closed && clientes.size() > 0) {
@@ -65,8 +65,8 @@ public class Cola {
         return maxSize;
     }
 
-    public LinkedList<Cliente> getCola(){
+/*    public LinkedList<Cliente> getCola(){
         return this.clientes;
     }
-
+*/
 }

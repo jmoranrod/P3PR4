@@ -42,11 +42,13 @@ public class Caja extends Thread {
         Cliente cliente = sacarCliente();
 
         if(cliente != null && !this.isInterrupted()){
-            esperaTiempoCarrito((long) (cliente.damePrecioCarro()/10));
+            System.out.println("La caja: " + this.getId() + " está atendiendo al cliente " + cliente.dameNombre() + " durante " + cliente.damePrecioCarro() / 10 + "seg");
+            esperaTiempoCarrito((long) (cliente.damePrecioCarro() / 10));
             if(this.isInterrupted()){
                 cola.añadirPrincipio(cliente);
                 return;
             }
+            System.out.println("La caja: "+this.getId()+ " ha terminado de atender al cliente "+cliente.dameNombre());
             contabilidad.añadeSaldo(cliente.damePrecioCarro());
         }
     }
