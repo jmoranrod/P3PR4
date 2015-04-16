@@ -20,11 +20,50 @@ public class Caja extends Thread {
 
     private Cola cola;
     private Contabilidad contabilidad;
+    private long tiempo;
     public static long id;
+//    private boolean cerrado;
 
     public Caja(Cola cola, Contabilidad contabilidad) {
         this.cola = cola;
         this.contabilidad = contabilidad;
-        this.id = Thread.currentThread().getId();
+        this.id = this.getId();
+//        cerrado = false;
     }
+
+    private Cliente sacarCliente(){
+        Cliente cliente = cola.sacar();
+        if(cliente == null)
+            this.interrupt();
+        return cliente;
+    }
+
+    private void atenderCliente(){
+        Cliente cliente = sacarCliente();
+
+        if(cliente != null && !this.isInterrupted()){
+            esperaTiempoCarrito((long) (cliente.damePrecioCarro()/10));
+            if(this.isInterrupted()){
+                cola.añadirPrincipio(cliente);
+                return;
+            }
+            contabilidad.añadeSaldo(cliente.damePrecioCarro());
+        }
+    }
+
+    private void esperaTiempoCarrito(long tiempo) {
+        try {
+            Thread.sleep(tiempo * 1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void run(){
+        while(!this.isInterrupted()){
+            atenderCliente();
+        }
+        this.notifyAll();
+    }
+
 }

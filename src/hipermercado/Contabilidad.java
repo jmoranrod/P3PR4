@@ -10,21 +10,21 @@ cantidad acumulada. Cuando se crean tienen saldo cero.
 
 public class Contabilidad {
 
-    private float saldo;
+    private double saldo;
 
     public Contabilidad(){
-        saldo = 0f;
+        saldo = 0d;
     }
 
-    public Contabilidad(float saldo){
+    public Contabilidad(double saldo){
         this.saldo = saldo;
     }
 
-    public void añadeSaldo(float saldo){
+    public void añadeSaldo(double saldo){
         this.saldo += saldo;
     }
 
-    public float dameSaldo(){
+    public double dameSaldo(){
         return saldo;
     }
 

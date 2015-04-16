@@ -14,11 +14,11 @@ Una cola cerrada no acepta nuevos clientes (el método “añadirFinal()” no h
 cuando se pretende sacar un cliente, y no queda ninguno, “sacar()” devuelve inmediatamente null.
 La cola, además, nos devuelve el tamaño máximo que ha alcanzado desde su creación con el método “tamañoMáximo()”.
 */
-public class Cola extends Thread {
+public class Cola {
 
     private int maxSize;
     private boolean closed;
-    private List<Cliente> clientes;
+    private LinkedList<Cliente> clientes;
 
     public Cola() {
         this.clientes = new LinkedList<Cliente>();
@@ -26,41 +26,33 @@ public class Cola extends Thread {
         this.closed = false;
     }
 
-    public void añadirFinal(Cliente cliente) {
+    public synchronized void añadirFinal(Cliente cliente) {
         if(closed)
             return;
-        synchronized (clientes) {
-            clientes.add(cliente);
-            if(maxSize < clientes.size()){
-                maxSize = clientes.size();
-            }
+        clientes.add(cliente);
+        if(maxSize < clientes.size()){
+            maxSize = clientes.size();
         }
     }
 
-    public void añadirPrincipio(Cliente cliente) {
-        if(closed)
-            return;
-        synchronized (clientes) {
-            clientes.add(cliente);
-            if(maxSize < clientes.size()){
-                maxSize = clientes.size();
-            }
-        }
+    public synchronized void añadirPrincipio(Cliente cliente) {
+        clientes.add(cliente);
+        /*if (maxSize < clientes.size()) {
+            maxSize = clientes.size();
+        }*/
     }
 
-    public Cliente sacar() throws InterruptedException {
+    public Cliente sacar() {
         long antes = System.currentTimeMillis();
+        //System.out.println("Tiempo al entrar: "+antes);
         if (!closed && clientes.size() > 0) {
-            wait(10000);
-            long despues = System.currentTimeMillis();
-            if(despues - antes > 10000){
-                return null;
+            while(clientes.isEmpty()){
+                long tiempo = System.currentTimeMillis() - antes;
+                if((tiempo - antes) > 10000) return null;
             }
-            synchronized (clientes) {
-                Cliente cliente = clientes.get(0);
-                clientes.remove(0);
-                return cliente;
-            }
+            Cliente cliente = clientes.get(0);
+            clientes.remove(0);
+            return cliente;
         }
         return null;
     }
@@ -71,6 +63,10 @@ public class Cola extends Thread {
 
     public int tamañoMáximo() {
         return maxSize;
+    }
+
+    public LinkedList<Cliente> getCola(){
+        return this.clientes;
     }
 
 }
