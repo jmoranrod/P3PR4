@@ -65,7 +65,7 @@ public class Caja extends Thread {
         while(!this.isInterrupted()){
             atenderCliente();
         }
-        this.notifyAll();
+        //this.notifyAll();
     }
 
 }

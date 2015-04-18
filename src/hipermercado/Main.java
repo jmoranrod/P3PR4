@@ -34,11 +34,14 @@ public class Main {
         Random r = new Random();
         int limInf = 0, limSup = 5;
         int cadencia = r.nextInt(limSup - limInf) + limInf, restantes = 0;
+        double precioTotal = 0d;
         System.out.println(nroCajas + " " + clientes + " " + cadencia);
         long tiempoInicio = System.currentTimeMillis();
         for (int i = 0; i < clientes; i++){
             if(System.currentTimeMillis() + (cadencia * 1000) >= tiempoInicio){
-                cola.añadirFinal(new Cliente());
+                Cliente cliente = new Cliente();
+                cola.añadirFinal(cliente);
+                precioTotal += cliente.damePrecioCarro();
             }
             /*if(cadencia > clientes){
                 cola.añadirFinal(new Cliente());
@@ -48,18 +51,27 @@ public class Main {
                 restantes = i;
             }*/
         }
+        System.out.println("El precio total debería ser: "+precioTotal);
         List<Caja> cajas = new LinkedList<Caja>();
+        Contabilidad contabilidad = new Contabilidad();
         for(int i = 0; i< nroCajas; i++){
-            cajas.add(new Caja(cola, new Contabilidad()));
+            cajas.add(new Caja(cola, contabilidad));
         }
 
         for(Caja caja : cajas){
             caja.start();
         }
 
+        if(System.currentTimeMillis() - tiempoInicio >= 60000)
+            cola.cerrar();
+
         for(Caja caja : cajas){
-            caja.join();
+            try{
+                caja.join();
+            }catch (Exception e){}
         }
+
+        System.out.println("Precio final: "+contabilidad.dameSaldo());
 
     }
 
