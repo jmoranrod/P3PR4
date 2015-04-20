@@ -1,9 +1,6 @@
 package hipermercado;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
-import java.util.Scanner;
+import java.util.*;
 
 /*
 Simulación
@@ -19,8 +16,22 @@ Se simulará asimismo el que las cajas pueden, por avería, dejar
 de funcionar. Para ello se suministra una clase DuendeAveria
 que ejecuta, en un hilo a parte, la acción de averiar las cajas
 aleatoriamente con interrupt(). Para que se produzca este proceso
-de averias es suficicnete es suficiente con crear un objeto de la
+de averias es suficiente con crear un objeto de la
 clase DuendeAveria al que se le pase un array o Collection con las Cajas.
+
+Para tener un percepción de lo que ocurre se deben mostrar información que incluya instante (hora)
+y estado del objeto implicado en cada uno de los siguientes eventos:
+
+Se añade un cliente a la cola. hecho
+
+Se saca un cliente de la cola. hecho
+
+Se inicia el procesamiento de un cliente en una caja. hecho
+
+Se finaliza el procesamiento de un cliente en una caja. hecho
+
+Se añaden datos a la contabilidad. hecho
+
 */
 public class Main {
 
@@ -28,28 +39,31 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Ingrese el número de cajas: ");
         int nroCajas = scanner.nextInt();
-        System.out.print("Número de clientes: ");
+        System.out.print("Ingrese el número de clientes: ");
         int clientes = scanner.nextInt();
         Cola cola = new Cola();
         Random r = new Random();
-        int limInf = 0, limSup = 5;
-        int cadencia = r.nextInt(limSup - limInf) + limInf, restantes = 0;
+        int cadencia;
         double precioTotal = 0d;
-        System.out.println(nroCajas + " " + clientes + " " + cadencia);
-        long tiempoInicio = System.currentTimeMillis();
-        for (int i = 0; i < clientes; i++){
-            if(System.currentTimeMillis() + (cadencia * 1000) >= tiempoInicio){
+        //System.out.println(nroCajas + " " + clientes + " " + cadencia);
+        long tiempoInicio = System.nanoTime();
+        for (int i = 1; i <= clientes; i++){
+            long actual = System.nanoTime();
+            //System.out.println("Tiempo actual: "+actual+" Tiempo inicio: "+tiempoInicio+" Diferencia: "+(actual-tiempoInicio));
+            if((actual - tiempoInicio)/1000000 >= 60000){
+                cola.cerrar();
+                //System.out.println(System.currentTimeMillis() + " --> COLA CERRADA, NO SE ADMITEN MAS CLIENTES!");
+                break;
+            }
+            cadencia = r.nextInt(5);
+            //System.out.println("Cadencia => "+cadencia);
+            if(!cola.getStatus()){
+                Thread.sleep(cadencia * 1000);
                 Cliente cliente = new Cliente();
                 cola.añadirFinal(cliente);
+                //System.out.println(System.currentTimeMillis() + " --> cliente número " + i + " nombre: " + cliente.dameNombre() + " entra en la cola.");
                 precioTotal += cliente.damePrecioCarro();
             }
-            /*if(cadencia > clientes){
-                cola.añadirFinal(new Cliente());
-            }else{
-                if(i == cadencia) break;
-                cola.añadirFinal(new Cliente());
-                restantes = i;
-            }*/
         }
         System.out.println("El precio total debería ser: "+precioTotal);
         List<Caja> cajas = new LinkedList<Caja>();
@@ -60,21 +74,21 @@ public class Main {
 
         for(Caja caja : cajas){
             caja.start();
+            //caja.join();
         }
-
-        if(System.currentTimeMillis() - tiempoInicio >= 60000)
-            cola.cerrar();
-
+/*
+        Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
+        for (Thread thread: threadSet){
+            System.out.println(thread);
+        }
+*/
         for(Caja caja : cajas){
             try{
                 caja.join();
             }catch (Exception e){}
         }
 
-        System.out.println("Precio final: "+contabilidad.dameSaldo());
-
+        System.out.println("\n"+System.nanoTime()/1000000+" --> Precio final: "+contabilidad.dameSaldo()+"€.");
     }
 
 }
-
-
