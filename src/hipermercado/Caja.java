@@ -38,7 +38,7 @@ public class Caja extends Thread {
                 cola.añadirPrincipio(cliente);
                 return;
             }
-            //System.out.println(System.currentTimeMillis() + " --> La caja: " + this.getId() + " ha terminado de atender al cliente " + cliente.dameNombre());
+            System.out.println(System.nanoTime()/1000000 + " --> La caja: " + this.getId() + " ha terminado de atender al cliente " + cliente.dameNombre());
             //contabilidad.añadeSaldo(cliente.damePrecioCarro());
             dinero += cliente.damePrecioCarro();
         }
@@ -47,9 +47,7 @@ public class Caja extends Thread {
     private void esperaTiempoCarrito(long tiempo) {
         try {
             Thread.sleep(tiempo * 1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        } catch (InterruptedException e) {}
     }
 
     public void run(){

@@ -30,7 +30,7 @@ public class Cola {
         if(closed)
             return;
         clientes.add(cliente);
-        System.out.println(System.nanoTime()/1000000 + " --> cliente número " + clientes.size() + " nombre: " + cliente.dameNombre() + " entra en la cola.");
+        System.out.println(System.nanoTime() / 1000000 + " --> cliente número " + clientes.size() + " nombre: " + cliente.dameNombre() + " entra en la cola.");
         if(maxSize < clientes.size()){
             maxSize = clientes.size();
         }
@@ -44,13 +44,23 @@ public class Cola {
     }
 
     public synchronized Cliente sacar() {
-        long antes = System.nanoTime();
+        long antes = System.nanoTime()/1000000;
         //System.out.println("Tiempo al entrar: "+antes);
-        if (!closed && clientes.size() > 0) {
+        if (!closed && clientes.size() == 0) {
             while(clientes.isEmpty()){
-                long tiempo = (System.nanoTime() - antes)/1000000;
-                if((tiempo - antes) > 10000) return null;
+                /*long tiempo = System.nanoTime()/1000000;
+                if((tiempo - antes) > 10000) return null;*/
+                try {
+                    wait(10000);
+                    if(clientes.size() == 0){
+                        return null;
+                    }
+                } catch (InterruptedException e) {}
             }
+            Cliente cliente = clientes.get(0);
+            clientes.remove(0);
+            return cliente;
+        }else if(!closed && clientes.size() > 0){
             Cliente cliente = clientes.get(0);
             clientes.remove(0);
             return cliente;
