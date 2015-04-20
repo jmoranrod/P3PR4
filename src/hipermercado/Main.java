@@ -46,6 +46,20 @@ public class Main {
         int cadencia;
         double precioTotal = 0d;
         //System.out.println(nroCajas + " " + clientes + " " + cadencia);
+
+        List<Caja> cajas = new LinkedList<>();
+        Contabilidad contabilidad = new Contabilidad();
+        for(int i = 0; i< nroCajas; i++){
+            cajas.add(new Caja(cola, contabilidad));
+        }
+
+        for(Caja caja : cajas){
+            caja.start();
+            //caja.join();
+        }
+
+        //DuendeAveria duende = new DuendeAveria(cajas);
+
         long tiempoInicio = System.nanoTime();
         for (int i = 1; i <= clientes; i++){
             long actual = System.nanoTime();
@@ -65,23 +79,9 @@ public class Main {
                 precioTotal += cliente.damePrecioCarro();
             }
         }
-        System.out.println("El precio total debería ser: "+precioTotal);
-        List<Caja> cajas = new LinkedList<Caja>();
-        Contabilidad contabilidad = new Contabilidad();
-        for(int i = 0; i< nroCajas; i++){
-            cajas.add(new Caja(cola, contabilidad));
-        }
 
-        for(Caja caja : cajas){
-            caja.start();
-            //caja.join();
-        }
-/*
-        Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
-        for (Thread thread: threadSet){
-            System.out.println(thread);
-        }
-*/
+//        System.out.println("El precio total debería ser: "+precioTotal);
+
         for(Caja caja : cajas){
             try{
                 caja.join();
