@@ -56,5 +56,6 @@ public class Caja extends Thread {
         }
         contabilidad.añadeSaldo(dinero);
         System.out.println(System.nanoTime()/1000000+ " --> " + dinero + "€"+" añadidos a la contabilidad"+" por la caja "+this.getId() );
+        //this.notifyAll();
     }
 }
