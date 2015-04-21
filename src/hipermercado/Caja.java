@@ -4,17 +4,14 @@ public class Caja extends Thread {
 
     private Cola cola;
     private Contabilidad contabilidad;
-    private long tiempo;
     public static long id;
     private double dinero;
-//    private boolean cerrado;
 
     public Caja(Cola cola, Contabilidad contabilidad) {
         this.cola = cola;
         this.contabilidad = contabilidad;
-        this.id = this.getId();
+        id = this.getId();
         this.dinero = 0d;
-//        cerrado = false;
     }
 
     private Cliente sacarCliente(){
@@ -55,7 +52,6 @@ public class Caja extends Thread {
             atenderCliente();
         }
         contabilidad.añadeSaldo(dinero);
-        System.out.println(System.nanoTime()/1000000+ " --> " + dinero + "€"+" añadidos a la contabilidad"+" por la caja "+this.getId() );
-        //this.notifyAll();
+        System.out.println(System.nanoTime()/1000000+ " --> " + dinero + "€"+" añadidos a la contabilidad"+" por la caja "+this.getId());
     }
 }
