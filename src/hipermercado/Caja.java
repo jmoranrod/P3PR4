@@ -48,6 +48,7 @@ public class Caja extends Thread {
         } catch (InterruptedException e) {}
     }
 
+    @Override
     public void run(){
         while(!this.isInterrupted()){
             atenderCliente();
