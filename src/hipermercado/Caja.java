@@ -32,6 +32,7 @@ public class Caja extends Thread {
             System.out.println(System.nanoTime()/1000000 + " --> La caja: " + this.getId() + " está atendiendo al cliente " + cliente.dameNombre() + " durante " + cliente.damePrecioCarro() / 10 + "seg");
             esperaTiempoCarrito((long) (cliente.damePrecioCarro() / 10));
             if(this.isInterrupted()){
+                System.out.println(System.nanoTime()/1000000+" -----> Caja: "+ this.getId() + " averiada. Añadiendo al cliente" + cliente.dameNombre()+ " al principio de la cola.");
                 cola.añadirPrincipio(cliente);
                 return;
             }
