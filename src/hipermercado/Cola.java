@@ -62,7 +62,7 @@ public class Cola {
     }
 
     public int tamañoMáximo() {
-        return maxSize;
+        return maxSize + 1;
     }
 
     public boolean getStatus(){
